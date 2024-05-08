@@ -12,11 +12,14 @@ CUBE_SIZE = 10
 # Apple style
 APPLE_COLOR = (235, 61, 52)
 
+# Amount of apples
+APPLESAMOUNT = 3
+
 # For moving speed
 TIMEUNTILMOVE = .05
 
 # for fps displaying
-TIMEUNTILUPDATE = 0.5
+TIMEUNTILUPDATE = 0
 
 # display
 WIDTH = 720
@@ -85,7 +88,7 @@ move = MoveDir.BOTTOM
 # variables for game
 # snake parts starting with head
 parts = [Snake(screen.get_width() / 2, screen.get_height() / 2)]
-appleRect = pygame.Rect(0, 0, 0, 0)
+apples = [pygame.Rect(10, 10, 0, 0)] * APPLESAMOUNT;
 score = 0
 
 # func that end game
@@ -95,9 +98,9 @@ def gameOver():
     print("Game Over ! Finished with", str(score), "point(s)")
 
 # set apple rect pos to random pos
-def spawnApple():
-    global appleRect
-    appleRect = pygame.Rect(round(random.randint(CUBE_SIZE, screen.get_width() - CUBE_SIZE) / CUBE_SIZE) * CUBE_SIZE, round(random.randint(CUBE_SIZE, screen.get_height() - CUBE_SIZE) / CUBE_SIZE) * CUBE_SIZE, CUBE_SIZE, CUBE_SIZE)
+def spawnApple(apples):
+    for i in range(len(apples)):
+        apples[i] = pygame.Rect(round(random.randint(CUBE_SIZE, screen.get_width() - CUBE_SIZE) / CUBE_SIZE) * CUBE_SIZE, round(random.randint(CUBE_SIZE, screen.get_height() - CUBE_SIZE) / CUBE_SIZE) * CUBE_SIZE, CUBE_SIZE, CUBE_SIZE)
 
 # function that add snake part
 def addSnake(): 
@@ -110,8 +113,7 @@ def addSnake():
         parts.append(Snake(pos.x, pos.y, CUBE_COLOR2))
 
 # spawn apple before game
-spawnApple()
-
+spawnApple(apples)
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -131,7 +133,8 @@ while running:
     screen.blit(text_surface, (screen.get_width() - 5 - text_surface.get_width(), 5))
 
     #render apple
-    pygame.draw.rect(screen, APPLE_COLOR, appleRect)
+    for apple in apples:
+        pygame.draw.rect(screen, APPLE_COLOR, apple)
 
     # render snake
     for part in parts:
@@ -163,15 +166,16 @@ while running:
         nextMove = TIMEUNTILMOVE
         
         # if got apple add next element
-        if(parts[0].check(appleRect)):
-            #add body part
-            addSnake()
+        for i in range(len(apples)):
+            if(parts[0].check(apples[i])):
+                #add body part
+                addSnake()
 
-            # randomly place apple
-            spawnApple()
+                # randomly place apple
+                apples[i] = pygame.Rect(round(random.randint(CUBE_SIZE, screen.get_width() - CUBE_SIZE) / CUBE_SIZE) * CUBE_SIZE, round(random.randint(CUBE_SIZE, screen.get_height() - CUBE_SIZE) / CUBE_SIZE) * CUBE_SIZE, CUBE_SIZE, CUBE_SIZE)
 
-            # add score
-            score += 1
+                # add score
+                score += 1
 
         # change pos of other elements
         for i in range(len(parts)):
@@ -191,7 +195,7 @@ while running:
     pygame.display.flip()
 
     # delta time
-    dt = clock.tick(60) / 1000 # limits FPS to 60
+    dt = clock.tick(10000000) / 1000 # limits FPS to 60
 
     # refresh fps
     nextUpdate -= dt
