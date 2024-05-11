@@ -195,7 +195,7 @@ while running:
     pygame.display.flip()
 
     # delta time
-    dt = clock.tick(10000000) / 1000 # limits FPS to 60
+    dt = clock.tick(60) / 1000 # limits FPS to 60
 
     # refresh fps
     nextUpdate -= dt
