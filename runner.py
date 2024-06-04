@@ -104,7 +104,11 @@ def spawnApple(apples):
 
 # function that add snake part
 def addSnake(): 
-    global parts
+    global parts, score
+
+    # add score
+    score += 1
+
     lastIndex = len(parts) - 1
     pos = parts[lastIndex].previousPos()
     if(len(parts)%2):
@@ -173,9 +177,6 @@ while running:
 
                 # randomly place apple
                 apples[i] = pygame.Rect(round(random.randint(CUBE_SIZE, screen.get_width() - CUBE_SIZE) / CUBE_SIZE) * CUBE_SIZE, round(random.randint(CUBE_SIZE, screen.get_height() - CUBE_SIZE) / CUBE_SIZE) * CUBE_SIZE, CUBE_SIZE, CUBE_SIZE)
-
-                # add score
-                score += 1
 
         # change pos of other elements
         for i in range(len(parts)):
